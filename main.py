@@ -14,8 +14,8 @@ st.subheader(f"{option} for the next {days} in {place}")
 
 get_data(place, days, option)
 
-dates = []
-temperature = []
+dates = [days]
+temperature = [option]
 figure = px.line(x=dates, y=temperature, labels={"x:" "Dates",
                                                  "y:" "Temperature(C)"})
 st.plotly_chart(figure)
