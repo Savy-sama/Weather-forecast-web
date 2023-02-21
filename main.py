@@ -14,20 +14,24 @@ option = st.selectbox("Select the data to view", ("Temperature",
 st.subheader(f"{option} for the next {days} in {place}")
 
 if place:
-    # Getting the data for temperature/weather condition
-    filtered_data = get_data(place, days)
+    try:
+        # Getting the data for temperature/weather condition
+        filtered_data = get_data(place, days)
 
-    if option == "Temperature":
-        # Creating a Temperature plot
-        temp = [dict["main"]["temp"] for dict in filtered_data]
-        dates = [dict["dt_txt"] for dict in filtered_data]
-        figure = px.line(x=dates, y=temp, labels={"x:" "Dates",
-                                                  "y:" "Temperature(C)"})
-        st.plotly_chart(figure)
+        if option == "Temperature":
+            # Creating a Temperature plot
+            temp = [dict["main"]["temp"] / 10 for dict in filtered_data]
+            dates = [dict["dt_txt"] for dict in filtered_data]
+            figure = px.line(x=dates, y=temp, labels={"x": "Dates",
+                                                      "y": "Temperature(C)"})
+            st.plotly_chart(figure)
 
-    elif option == "Weather Condition":
-        condition = [dict["weather"][0]["main"] for dict in filtered_data]
-        images = {"Clear": "images/clear.png", "Clouds": "images/cloud.png",
-                  "Rain": "images/rain.png", "Snow": "images/snow.png"}
-        image_path = [images[sky] for sky in condition]
-        st.image(image_path, width=100)
+        elif option == "Weather Condition":
+            dates = [dict["dt_txt"] for dict in filtered_data]
+            condition = [dict["weather"][0]["main"] for dict in filtered_data]
+            images = {"Clear": "images/clear.png", "Clouds": "images/cloud.png",
+                      "Rain": "images/rain.png", "Snow": "images/snow.png"}
+            image_path = [images[sky] for sky in condition]
+            st.image(image_path, width=100, caption=dates)
+    except KeyError:
+        st.write("You Entered a Non-Existing Place")
